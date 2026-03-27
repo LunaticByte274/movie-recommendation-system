@@ -1,10 +1,18 @@
 import express from "express";
 import axios from "axios";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
 const app = express();
+
+// ============================
+// PATH FIX (IMPORTANT FOR VERCEL)
+// ============================
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ============================
 // PORT (Vercel compatible)
@@ -16,7 +24,10 @@ const port = process.env.PORT || 3000;
 // ============================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+
+// 🔥 Static + Views FIX
+app.use(express.static(path.join(__dirname, "../public")));
+app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "ejs");
 
 // ============================
@@ -85,7 +96,6 @@ app.post("/movies", async (req, res) => {
       });
     }
 
-    // 🔥 Fetch movie data from OMDb
     const response = await axios.get(
       `https://www.omdbapi.com/?t=${title}&apikey=${OMDB_API_KEY}`
     );
@@ -109,7 +119,6 @@ app.post("/movies", async (req, res) => {
 
     movies.push(newMovie);
 
-    // Redirect for UI
     res.redirect("/");
     
   } catch (error) {
