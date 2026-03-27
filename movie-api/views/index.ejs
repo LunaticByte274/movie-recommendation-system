@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Movie Recommendation System</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <button onclick="toggleTheme()" class="theme-btn">🌗</button>
+
+  <h1>🎬 Movie Recommendation System</h1>
+
+  <!-- FORM -->
+  <form id="movieForm">
+
+    <input type="text" id="title" placeholder="🎥 Title" required>
+    <input type="text" id="genre" placeholder="🎭 Genre" required>
+    <input type="number" id="rating" placeholder="⭐ Rating (1-5)" min="1" max="5" required>
+
+    <select id="recommended">
+      <option value="Yes">👍 Recommended</option>
+      <option value="No">👎 Not Recommended</option>
+    </select>
+
+    <button type="submit">➕ Add Movie</button>
+  </form>
+
+  <!-- FILTER -->
+  <h2>🎞 Movies</h2>
+
+  <input type="number" id="filter" placeholder="⭐ Filter by rating">
+  <button onclick="filterMovies()">Filter</button>
+  <button onclick="location.reload()">Reset</button>
+
+  <!-- MOVIES -->
+  <div id="movieList">
+
+    <% movies.forEach(movie => { %>
+      <div class="movie-card">
+
+        <img src="<%= movie.poster %>" class="poster"/>
+
+        <div class="movie-info">
+          <h3><%= movie.title %></h3>
+          <p>🎭 <%= movie.genre %></p>
+
+          <p class="<%= movie.rating >=4 ? 'high' : (movie.rating == 3 ? 'medium' : 'low') %>">
+            ⭐ <%= movie.rating %>
+          </p>
+
+          <p>🎬 IMDb: <%= movie.imdb || 'N/A' %></p>
+          <p>📅 <%= movie.year || 'N/A' %></p>
+
+          <p>
+            <%= movie.recommended === 'Yes' ? '👍 Recommended' : '👎 Not Recommended' %>
+          </p>
+        </div>
+
+        <button class="delete-btn" onclick="deleteMovie(<%= movie.id %>)">❌</button>
+
+      </div>
+    <% }) %>
+
+  </div>
+
+</div>
+
+<script>
+
+// ============================
+// ADD MOVIE (NOW SERVER HANDLES OMDb)
+// ============================
+document.getElementById("movieForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const movie = {
+    title: document.getElementById("title").value,
+    genre: document.getElementById("genre").value,
+    rating: document.getElementById("rating").value,
+    recommended: document.getElementById("recommended").value
+  };
+
+  await fetch("/movies", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(movie)
+  });
+
+  location.reload();
+});
+
+// ============================
+// DELETE
+// ============================
+async function deleteMovie(id) {
+  await fetch(`/movies/${id}`, { method: "DELETE" });
+  location.reload();
+}
+
+// ============================
+// FILTER (FIXED)
+// ============================
+async function filterMovies() {
+  const rating = document.getElementById("filter").value;
+
+  const res = await fetch(`/movies?rating=${rating}`);
+  const result = await res.json();
+
+  const movies = result.data; // ✅ FIX
+
+  const list = document.getElementById("movieList");
+  list.innerHTML = "";
+
+  movies.forEach(movie => {
+
+    const ratingClass =
+      movie.rating >= 4 ? "high" :
+      movie.rating == 3 ? "medium" :
+      "low";
+
+    list.innerHTML += `
+      <div class="movie-card">
+
+        <img src="${movie.poster || 'https://via.placeholder.com/80x120'}" class="poster"/>
+
+        <div class="movie-info">
+          <h3>${movie.title}</h3>
+          <p>🎭 ${movie.genre}</p>
+
+          <p class="${ratingClass}">
+            ⭐ ${movie.rating}
+          </p>
+
+          <p>🎬 IMDb: ${movie.imdb || 'N/A'}</p>
+          <p>📅 ${movie.year || 'N/A'}</p>
+
+          <p>
+            ${movie.recommended === 'Yes' ? '👍 Recommended' : '👎 Not Recommended'}
+          </p>
+        </div>
+
+        <button class="delete-btn" onclick="deleteMovie(${movie.id})">❌</button>
+
+      </div>
+    `;
+  });
+}
+
+// ============================
+// THEME TOGGLE
+// ============================
+function toggleTheme() {
+  document.body.classList.toggle("light-mode");
+
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("light-mode") ? "light" : "dark"
+  );
+}
+
+window.onload = () => {
+  if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light-mode");
+  }
+};
+
+</script>
+
+</body>
+</html>

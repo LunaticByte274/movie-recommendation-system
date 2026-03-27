@@ -1,0 +1,120 @@
+/* Background */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  margin: 0;
+  color: white;
+  transition: 0.3s;
+}
+
+/* Container */
+.container {
+  max-width: 500px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(20, 20, 35, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+/* Title */
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+}
+
+/* Inputs */
+input, select {
+  width: 90%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #2c2c3c;
+  color: white;
+}
+
+/* Buttons */
+button {
+  padding: 10px 18px;
+  margin: 10px 5px;
+  border-radius: 10px;
+  border: none;
+  background: #00adb5;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #00cfd8;
+  transform: scale(1.05);
+}
+
+/* Section Title */
+h2 {
+  margin-top: 25px;
+}
+
+/* Movie Cards */
+.movie-card {
+  background: rgba(0,0,0,0.5);
+  padding: 15px;
+  border-radius: 12px;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: 0.3s;
+}
+
+.movie-card:hover {
+  transform: scale(1.02);
+  background: rgba(0,0,0,0.7);
+}
+
+/* Poster */
+.poster {
+  width: 60px;
+  height: 90px;
+  border-radius: 8px;
+}
+
+/* Movie Info */
+.movie-info {
+  text-align: left;
+  flex: 1;
+}
+
+/* Rating Color */
+.high { color: #ff4d4d; }
+.medium { color: #ffc107; }
+.low { color: #4caf50; }
+
+/* Delete Button */
+.delete-btn {
+  background: crimson;
+}
+
+.delete-btn:hover {
+  background: red;
+}
+
+/* Light Mode */
+.light-mode {
+  background: #f5f5f5;
+  color: black;
+}
+
+.light-mode .container {
+  background: white;
+}
+
+.light-mode input,
+.light-mode select {
+  background: #eee;
+  color: black;
+}
